@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BL;
+using BL.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,6 +35,7 @@ namespace AngularVideoConverter
                 configuration.RootPath = "ClientApp/dist";
             });
             services.AddControllersWithViews();
+            services.AddScoped<IVideoConverter, VideoConverter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
