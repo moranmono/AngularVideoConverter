@@ -1,0 +1,7 @@
+<div class="col-md-3">
+    <input #file type="file" multiple (change)="fileUpload(file.files)" />
+    <br />
+    <span style="font-weight:bold;color:green;" *ngIf="progress > 0 && progress < 100">
+        {{progress}}%
+    </span>
+</div>
