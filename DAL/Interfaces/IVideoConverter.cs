@@ -9,6 +9,6 @@ namespace BL.Interfaces
     public interface IVideoConverter
     {
         Task<IConversionResult> HDVideoConvert(string inputFilePath, string outputPath);
-        Task<IConversionResult> ThumbnailVideoConvert(string inputFilePath);
+        Task<IConversionResult> ThumbnailVideoConvert(string inputFilePath, int frameSecond);
     }
 }

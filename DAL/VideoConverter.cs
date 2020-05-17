@@ -10,17 +10,19 @@ using Xabe.FFmpeg;
 
 namespace BL
 {
-    public class VideoConverter: IVideoConverter
+    public class VideoConverter : IVideoConverter
     {
         private readonly ILogger _logger;
         public VideoConverter(ILogger<VideoConverter> logger)
         {
+            //TODO: Create a media info property
+            //TOOD: Cancelation token
             _logger = logger;
         }
 
         public async Task<IConversionResult> HDVideoConvert(string inputFilePath, string outputPath)
         {
-            var cancellationVideoConverterTokenSource = new CancellationTokenSource();
+            var cancellationVideoToken = new CancellationTokenSource();
             try
             {
                 var info = await FFmpeg.GetMediaInfo(inputFilePath);
@@ -32,7 +34,7 @@ namespace BL
                 IConversionResult conversionVideoResult = await FFmpeg.Conversions.New()
                     .AddStream(videoStreamResize)
                     .SetOutput(outputPath)
-                    .Start(cancellationVideoConverterTokenSource.Token);
+                    .Start(cancellationVideoToken.Token);
                 return conversionVideoResult;
             }
             catch (Exception ex)
@@ -42,9 +44,25 @@ namespace BL
             return null;
         }
 
-        public Task<IConversionResult> ThumbnailVideoConvert(string inputFilePath)
+        public async Task<IConversionResult> ThumbnailVideoConvert(string inputFilePath, int frameSecond)
         {
-            throw new NotImplementedException();
+            var cancellationThumbnailToken = new CancellationTokenSource();
+            try
+            {
+                var info = await FFmpeg.GetMediaInfo(inputFilePath);
+                IVideoStream videoStreamThumbnail = info.VideoStreams.FirstOrDefault()
+                  ?.SetCodec(VideoCodec.png);
+                IConversionResult conversionImageResult = await FFmpeg.Conversions.New()
+                    .AddStream(videoStreamThumbnail)
+                    .ExtractNthFrame(frameSecond, (number) => { return string.Format("fileNameNo_{0}.png", number); })
+                    .Start(cancellationThumbnailToken.Token);
+                return conversionImageResult;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+            return null;
         }
     }
 }
