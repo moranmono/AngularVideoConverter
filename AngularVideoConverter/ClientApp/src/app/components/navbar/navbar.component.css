@@ -1,0 +1,16 @@
+.logo {
+    color: var(--clr-black);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-h3);
+}
+
+.logo-left{
+    background-color: var(--clr-accent);
+    padding: 3px 5px 3px 8px;
+    border-radius: 4px;
+}
+
+.logo-right {
+    padding: 3px 8px 3px 8px;
+    border-radius: 4px;
+}
