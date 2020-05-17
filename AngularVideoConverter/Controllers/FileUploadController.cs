@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using BL.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace AngularVideoConverter.Controllers
@@ -17,36 +19,45 @@ namespace AngularVideoConverter.Controllers
     {
         private IWebHostEnvironment _hostingEnvironment;
         private ILogger<FileUploadController> _logger;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public FileUploadController(IWebHostEnvironment hostingEnvironment, ILogger<FileUploadController> logger)
+        public FileUploadController(IWebHostEnvironment hostingEnvironment, ILogger<FileUploadController> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _hostingEnvironment = hostingEnvironment;
+            _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
         }
 
         [HttpPost, DisableRequestSizeLimit, Route("file-upload")]
-        public IActionResult FileUpload()
+        public async Task<IActionResult> FileUpload()
         {
             try
             {
-                ///TODO: folder as file name
-                var file = Request.Form.Files[0];
-                var folderName = file.FileName;
-                var sourceVideoFolderPath = string.Format(@"{0}\Media\SourceVideo\{1}", _hostingEnvironment.ContentRootPath, Path.GetFileNameWithoutExtension(file.FileName));
-                if(!Directory.Exists(sourceVideoFolderPath))
+                var fileInput = Request.Form.Files.FirstOrDefault();
+                if (fileInput != null)
                 {
-                    Directory.CreateDirectory(sourceVideoFolderPath);
-                }
-                if(file.Length > 0)
-                {
-                    string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    string fullPath = Path.Combine(sourceVideoFolderPath, fileName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    string sourceVideoFolderPath = string.Empty;
+                    string rootPath = _hostingEnvironment.ContentRootPath;
+                    using (var scope = _serviceScopeFactory.CreateScope())
                     {
-                        file.CopyTo(stream);
+                        var fileManagerService = scope.ServiceProvider.GetRequiredService<IFileManager>();
+                        var videoConverterService = scope.ServiceProvider.GetRequiredService<IVideoConverter>();
+                        var IsDirectoriesCreated = fileManagerService.CreateDirectories(rootPath, fileInput.FileName);
+                        if (IsDirectoriesCreated)
+                        {
+                            sourceVideoFolderPath = fileManagerService.GetSourceFolder(rootPath, fileInput.FileName);
+                            string fileName = ContentDispositionHeaderValue.Parse(fileInput.ContentDisposition).FileName.Trim('"');
+                            string sourceFilefullPath = Path.Combine(sourceVideoFolderPath, fileName);
+                            using (var stream = new FileStream(sourceFilefullPath, FileMode.Create))
+                            {
+                                fileInput.CopyTo(stream);
+                            }
+                            string hdOutputFolder = fileManagerService.GetHDVideoOuputFilePath(rootPath, fileName);
+                            var conversionHdResult = await videoConverterService.HDVideoConvert(sourceFilefullPath, fileName + "HD.mp4");
+                        }
                     }
+                    return Ok();
                 }
-                return Ok();
             }
             catch (Exception ex)
             {
