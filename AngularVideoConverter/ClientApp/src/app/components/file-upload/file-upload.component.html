@@ -1,7 +1,11 @@
-<div class="col-md-3">
-    <input #file type="file" multiple (change)="fileUpload(file.files)" />
-    <br />
-    <span style="font-weight:bold;color:green;" *ngIf="progress > 0 && progress < 100">
+<div>
+    <span>Please select a file</span>
+</div>
+<form enctype="multipart/form-data">
+    <input #file type="file" name="files" multiple accept="video/mp4,image/png,image/jpg" (change)="fileUpload(file.files)" />
+</form>
+<div>
+    <span class="progress" *ngIf="progress > 0 && progress < 100">
         {{progress}}%
     </span>
 </div>

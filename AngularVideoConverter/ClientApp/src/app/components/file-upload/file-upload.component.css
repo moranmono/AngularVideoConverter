@@ -1,0 +1,4 @@
+.progress {
+    font-size: var(--fw-bold);
+    color: green;
+}
