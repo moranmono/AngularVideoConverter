@@ -8,7 +8,7 @@ namespace BL.Interfaces
     {
         bool CreateDirectories(string rootPath, string fileName);
         string GetSourceFolder(string rootPath, string fileName);
-        string GetHDVideoOuputFilePath(string fileName);
-        //string GetOutputFilePath()
+        string GetHDVideoOuputFilePath(string rootPath, string fileName);
+        public string GetThumbnailsOutputFolder(string rootPath, string fileName);
     }
 }

@@ -55,9 +55,16 @@ namespace BL
             return string.Format(@"{0}{1}{2}", rootPath, _sourceVideoFolderPath, shortFileName);
         }
 
-        public string GetHDVideoOuputFilePath(string fileName)
+        public string GetHDVideoOuputFilePath(string rootPath, string fileName)
         {
-            throw new NotImplementedException();
+            var shortFileName = Path.GetFileNameWithoutExtension(fileName);
+            return string.Format(@"{0}{1}{2}\{3}_HD.mp4", rootPath, _hdVideoFolderPath, shortFileName, fileName);
+        }
+
+        public string GetThumbnailsOutputFolder(string rootPath, string fileName)
+        {
+            var shortFileName = Path.GetFileNameWithoutExtension(fileName);
+            return string.Format(@"{0}{1}{2}", rootPath, _thumbnailsFolderPath, shortFileName);
         }
     }
 }
