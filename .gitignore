@@ -338,4 +338,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-/AngularVideoConverter/Media/
+/AngularVideoConverter/Media/SourceVideo
+/AngularVideoConverter/Media/HDVideo
+/AngularVideoConverter/Media/Thumbnails
