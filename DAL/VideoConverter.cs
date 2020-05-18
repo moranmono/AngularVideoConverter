@@ -15,8 +15,6 @@ namespace BL
         private readonly ILogger _logger;
         public VideoConverter(ILogger<VideoConverter> logger)
         {
-            //TODO: Create a media info property
-            //TOOD: Cancelation token
             _logger = logger;
         }
 
