@@ -20,7 +20,7 @@ namespace BL
             _logger = logger;
         }
 
-        public async Task<IConversionResult> HDVideoConvert(string inputFilePath, string outputPath)
+        public async Task<IConversionResult> HDVideoConvert(string inputFilePath, string outputFilePath)
         {
             var cancellationVideoToken = new CancellationTokenSource();
             try
@@ -33,7 +33,7 @@ namespace BL
 
                 IConversionResult conversionVideoResult = await FFmpeg.Conversions.New()
                     .AddStream(videoStreamResize)
-                    .SetOutput(outputPath)
+                    .SetOutput(outputFilePath)
                     .Start(cancellationVideoToken.Token);
                 return conversionVideoResult;
             }
@@ -44,7 +44,7 @@ namespace BL
             return null;
         }
 
-        public async Task<IConversionResult> ThumbnailVideoConvert(string inputFilePath, int frameSecond)
+        public async Task<IConversionResult> ThumbnailVideoConvert(string inputFilePath, string outputFolder, string fileName, int frameSecond)
         {
             var cancellationThumbnailToken = new CancellationTokenSource();
             try
@@ -54,7 +54,7 @@ namespace BL
                   ?.SetCodec(VideoCodec.png);
                 IConversionResult conversionImageResult = await FFmpeg.Conversions.New()
                     .AddStream(videoStreamThumbnail)
-                    .ExtractNthFrame(frameSecond, (number) => { return string.Format("fileNameNo_{0}.png", number); })
+                    .ExtractNthFrame(frameSecond, (number) => { return string.Format(@"{0}\{1}_{2}.png",outputFolder ,fileName, number); })
                     .Start(cancellationThumbnailToken.Token);
                 return conversionImageResult;
             }
