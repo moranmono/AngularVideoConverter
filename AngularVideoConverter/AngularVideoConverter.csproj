@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Media\SourceVideo\koala_eating\**" />
+    <Content Remove="Media\SourceVideo\koala_eating\**" />
+    <EmbeddedResource Remove="Media\SourceVideo\koala_eating\**" />
+    <None Remove="Media\SourceVideo\koala_eating\**" />
+    <TypeScriptCompile Remove="Media\SourceVideo\koala_eating\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.4" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.9.2">
@@ -16,8 +24,8 @@
 
   <ItemGroup>
     <Folder Include="Media\HDVideo\" />
-    <Folder Include="Media\Thumbnails\" />
     <Folder Include="Media\SourceVideo\" />
+    <Folder Include="Media\Thumbnails\" />
   </ItemGroup>
 
   <ItemGroup>

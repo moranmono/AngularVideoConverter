@@ -58,7 +58,7 @@ namespace BL
         public string GetHDVideoOuputFilePath(string rootPath, string fileName)
         {
             var shortFileName = Path.GetFileNameWithoutExtension(fileName);
-            return string.Format(@"{0}{1}{2}\{3}_HD.mp4", rootPath, _hdVideoFolderPath, shortFileName, fileName);
+            return string.Format(@"{0}{1}{2}\{3}_HD.mp4", rootPath, _hdVideoFolderPath, shortFileName, shortFileName);
         }
 
         public string GetThumbnailsOutputFolder(string rootPath, string fileName)
