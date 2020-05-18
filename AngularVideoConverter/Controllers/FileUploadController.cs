@@ -46,14 +46,17 @@ namespace AngularVideoConverter.Controllers
                         if (IsDirectoriesCreated)
                         {
                             sourceVideoFolderPath = fileManagerService.GetSourceFolder(rootPath, fileInput.FileName);
-                            string fileName = ContentDispositionHeaderValue.Parse(fileInput.ContentDisposition).FileName.Trim('"');
-                            string sourceFilefullPath = Path.Combine(sourceVideoFolderPath, fileName);
+                            string sourceFilefullPath = Path.Combine(sourceVideoFolderPath, fileInput.FileName);
                             using (var stream = new FileStream(sourceFilefullPath, FileMode.Create))
                             {
                                 fileInput.CopyTo(stream);
                             }
-                            string hdOutputFolder = fileManagerService.GetHDVideoOuputFilePath(rootPath, fileName);
-                            var conversionHdResult = await videoConverterService.HDVideoConvert(sourceFilefullPath, fileName + "HD.mp4");
+                            string hdOutputFilePath = fileManagerService.GetHDVideoOuputFilePath(rootPath, fileInput.FileName);
+                            var conversionHdResult = await videoConverterService.HDVideoConvert(sourceFilefullPath, hdOutputFilePath);
+
+                            string thumbOutputFolder = fileManagerService.GetThumbnailsOutputFolder(rootPath, fileInput.FileName);
+                            var conversionThumb1Result = await videoConverterService.ThumbnailVideoConvert(sourceFilefullPath, thumbOutputFolder, fileInput.FileName, 1);
+                            var conversionThumb2Result = await videoConverterService.ThumbnailVideoConvert(sourceFilefullPath, thumbOutputFolder, fileInput.FileName, 3);
                         }
                     }
                     return Ok();
